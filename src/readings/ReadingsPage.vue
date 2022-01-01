@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, ref, computed, Ref } from 'vue';
 
 import ReadingsTable from './ReadingsTable.vue';
+import { getSince, Readings } from './store';
 
 export default defineComponent({
   components: {
@@ -25,15 +25,15 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
-    const storeReadings = computed(() => (store.state));
-    const readings = ref([22, 23]);
-    store.dispatch('readings/get').then((data) => {
+    // const storeReadings = computed(() => (store.state));
+    const readings: Ref<Readings> = ref({});
+    getSince().then((data) => {
+      console.log(data);
       readings.value = data;
     });
     return {
       readings,
-      storeReadings,
+      // storeReadings,
     };
   },
 });

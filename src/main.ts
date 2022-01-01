@@ -1,7 +1,6 @@
 import { createApp } from 'vue';
 import './registerServiceWorker';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import { createStore } from 'vuex';
 
 import App from './App.vue';
 
@@ -29,12 +28,7 @@ const router = createRouter({
   routes,
 });
 
-const store = createStore({
-  modules: { readings: readings.store },
-});
-
 createApp(App)
   .component('DefaultPage', layout.components.DefaultPage)
-  .use(store)
   .use(router)
   .mount('#app');

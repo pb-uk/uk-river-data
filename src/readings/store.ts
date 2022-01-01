@@ -1,4 +1,3 @@
-import { ActionContext, MutationContext } from 'vuex';
 import { request, RequestOptions, Response } from '../helpers/request';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -20,7 +19,8 @@ value: 4.699
 */
 
 // TODO rewrite for multiple stations.
-const getSince = async (options: ReadingsOptions = {}): Promise<Response> => {
+// export const getSince = async (options: ReadingsOptions = {}): Promise<Response> => {
+export const getSince = async (options: ReadingsOptions = {}): Promise<Readings> => {
   try {
     const stationReference = '3400TH';
     const since =
@@ -34,11 +34,11 @@ const getSince = async (options: ReadingsOptions = {}): Promise<Response> => {
     const params = {
       since,
       _sorted: '',
-      _limit: 500,
+      _limit: 10,
     };
     const response = await (options.request || request)({ path, params });
     //const response: ReadingsResponse = await (options.request || request)({ path, params });
-    return response;
+    return parseReadingsResponse(response);
 
     /*
     mapTimeSeriesMeasures(
@@ -55,7 +55,8 @@ const getSince = async (options: ReadingsOptions = {}): Promise<Response> => {
     throw e;
   }
 };
-type Readings = Record<string, Array<TimedReading>>;
+
+export type Readings = Record<string, Array<TimedReading>>;
 
 type TimedReading = [
   // ISO DateTime.
@@ -80,36 +81,4 @@ const parseReadingsResponse = (response: Response): Readings => {
     mapped[measure].push([dateTime, value]);
   });
   return mapped;
-};
-
-export default {
-  namespaced: true,
-  state: () => {
-    return {
-      readings: {},
-    };
-  },
-
-  mutations: {
-    set(state, readings: Readings) {
-      Object.entries(readings).forEach(([key, readingsOne]) => {
-        if (!(key in state.readings)) {
-          state.readings[key] = [];
-        }
-        readingsOne.forEach((reading) => {
-          state.readings[key].push(reading)
-        });
-      });
-    }
-  },
-
-  actions: {
-    // Request some readings.
-    get: async ({ commit }) => {
-      const since = parseReadingsResponse(await getSince());
-      commit('set', since);
-      return since;
-      // return Promise.resolve([123, 456]);
-    },
-  },
 };
