@@ -6,10 +6,12 @@ import App from './App.vue';
 
 import layout from './layout/index';
 import HomePage from './HomePage.vue';
+import stations from './stations/index';
 import readings from './readings/index';
 
 const routes: Array<RouteRecordRaw> = [
   ...readings.routes,
+  ...stations.routes,
   { path: '/', component: HomePage },
   /*
   {
@@ -30,5 +32,6 @@ const router = createRouter({
 
 createApp(App)
   .component('DefaultPage', layout.components.DefaultPage)
+  .component('DataTable', layout.components.DataTable)
   .use(router)
   .mount('#app');

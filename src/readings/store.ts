@@ -3,7 +3,7 @@ import { request, RequestOptions, Response } from '../helpers/request';
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 type ReadingsOptions = {
-  request?: (options: RequestOptions) => Response,
+  request?: (options: RequestOptions) => Response;
 };
 
 /*
@@ -20,7 +20,9 @@ value: 4.699
 
 // TODO rewrite for multiple stations.
 // export const getSince = async (options: ReadingsOptions = {}): Promise<Response> => {
-export const getSince = async (options: ReadingsOptions = {}): Promise<Readings> => {
+export const getSince = async (
+  options: ReadingsOptions = {}
+): Promise<Readings> => {
   try {
     const stationReference = '3400TH';
     const since =
@@ -62,7 +64,7 @@ type TimedReading = [
   // ISO DateTime.
   string,
   // Value.
-  number,
+  number
 ];
 
 const parseReadingsResponse = (response: Response): Readings => {
@@ -71,7 +73,7 @@ const parseReadingsResponse = (response: Response): Readings => {
   // .items
   const { items } = response.data;
   if (!Array.isArray(items)) {
-    throw new Error ('API response has no items');
+    throw new Error('API response has no items');
   }
   const mapped: Record<string, Array<TimedReading>> = {};
   items.forEach((item) => {

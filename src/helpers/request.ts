@@ -7,7 +7,7 @@ export type RequestOptions = {
 };
 
 export type Response = {
-  data: Record<string, unknown>,
+  data: Record<string, unknown>;
 };
 
 const baseRequest = axios.create({

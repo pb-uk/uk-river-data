@@ -6,9 +6,9 @@
         {{ storeReadings }}
       </pre>
     </div>
-    <div v-for="reading, key in readings" :key="key">
+    <div v-for="(reading, key) in readings" :key="key">
       {{ key }}
-    <ReadingsTable :data="reading" />
+      <ReadingsTable :data="reading" />
     </div>
   </DefaultPage>
 </template>
