@@ -1,32 +1,28 @@
 <template>
-  <table class="table">
+  <table class="table table-striped table-sm">
     <thead>
       <tr>
-        <th>itemKey</th>
         <th>row</th>
         <th v-for="(column, i) in columns" :key="i">{{ column.label }}</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(itemKey, i) in visibleRowKeys" :key="i">
-        <td>itemKey: {{ itemKey }}</td>
-        <td>row: {{ dataObject[itemKey] }}</td>
+      <tr v-for="(row, i) in visibleRows" :key="i">
+        <td>row: {{ row }}</td>
         <td v-for="(column, i) in columns" :key="i">
-          {{ dataObject[itemKey][column.key] }}
+          {{ row[column.key] }}
         </td>
       </tr>
     </tbody>
   </table>
 
   <div>itemsPerPage: {{ itemsPerPage }}</div>
-  <div>currentPage: {{ currentPage }}</div>
-  <div>firstItem: {{ firstItem }}</div>
-  <div>visibleRowKeys: {{ visibleRowKeys }}</div>
-  <div>filteredRows: {{ filteredRows }}</div>
+  <div>currentPageNumber: {{ currentPageNumber }}</div>
+  <div>visibleRows: {{ visibleRows }}</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref, Ref, watch } from 'vue';
 
 export default defineComponent({
   props: {
@@ -40,36 +36,35 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
+
+    filters: {
+      type: Object,
+      default: () => ({}),
+    },
   },
+
   setup(props) {
     const itemsPerPage = ref(10);
-    const currentPage = ref(1);
-    const firstItem = ref(0);
-    const ownColumns = ref(props.columns);
-
-    const filteredRows = Object.keys(props.dataObject).map((key) => [
+    const currentPageNumber = ref(1);
+    console.log(props.dataObject);
+    const filteredRows = Object.keys(props.dataObject).map((key): [key: string, isVisible: boolean] => ([
       key,
       true,
-    ]);
+    ]));
 
-    const visibleRowKeys = ref(Array(itemsPerPage.value));
+    const visibleRows: Ref<Array<Record<string, unknown>>> = ref([]);
 
-    const setVisibleRowKeys = () => {
-      let currentItemIndex = firstItem.value;
-      for (let i = 0; i < visibleRowKeys.value.length; ++i) {
-        let done = false;
-        while (!done && currentItemIndex < filteredRows.length) {
-          const maybeRow = filteredRows[currentItemIndex];
-          if (maybeRow[1]) {
-            visibleRowKeys.value[i] = maybeRow[0];
-            done = true;
-          }
-          ++currentItemIndex;
+    const refreshVisibleRows = () => {
+      let currentItemIndex = 0;
+      const visible = [];
+      while (visible.length < itemsPerPage.value && currentItemIndex < filteredRows.length) {
+        const [key, passesFilter] = filteredRows[currentItemIndex];
+        if (passesFilter) {
+          visible.push(props.dataObject[key]);
         }
-        if (!done) {
-          visibleRowKeys.value[i] = null;
-        }
+        ++currentItemIndex;
       }
+      visibleRows.value = visible;
     };
 
     const applyFilters = () => {
@@ -89,19 +84,17 @@ export default defineComponent({
     };
 
     applyFilters();
-    setVisibleRowKeys();
-
+    // setVisibleRowKeys();
+    refreshVisibleRows();
     watch(props.dataObject, () => {
-      console.log('Rerendering');
-      setVisibleRowKeys();
+      applyFilters();
+      refreshVisibleRows();
     });
 
     return {
-      currentPage,
-      filteredRows,
-      firstItem,
+      currentPageNumber,
       itemsPerPage,
-      visibleRowKeys,
+      visibleRows,
     };
   },
 });

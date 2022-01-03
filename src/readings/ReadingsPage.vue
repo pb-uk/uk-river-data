@@ -28,7 +28,6 @@ export default defineComponent({
     // const storeReadings = computed(() => (store.state));
     const readings: Ref<Readings> = ref({});
     getSince().then((data) => {
-      console.log(data);
       readings.value = data;
     });
     return {

@@ -1,21 +1,18 @@
 <template>
   <DefaultPage>
-    <div>
-      Store readings
-      <pre>
-        {{ storeReadings }}
-      </pre>
-    </div>
+    <h1>Stations</h1>
     <div>{{ Object.keys(stations).length }} stations</div>
-    <DataTable :data-object="stations" :columns="columns" />
+    <div  class="dark">
+    <DataTable :data-object="stations" :columns="columns" :filters="filters" />
     <!-- div v-for="station, key in stations" :key="key">
       Station {{ key }} {{ station.status === null ? 'null' : station.status }}
     </div -->
+    </div>
   </DefaultPage>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref } from 'vue';
+import { defineComponent, ref, Ref, onMounted } from 'vue';
 import { getStations, Stations } from './api-client';
 
 // import StationsTable from './StationsTable.vue';
@@ -28,6 +25,11 @@ export default defineComponent({
   setup() {
     // const storeReadings = computed(() => (store.state));
     const stations: Ref<Stations> = ref({});
+    const filters = {
+      status: {
+        values: [null],
+      },
+    };
     const columns = [
       { key: 'stationReference', label: 'Ref' },
       {
@@ -36,14 +38,22 @@ export default defineComponent({
         filter: true,
         filterValues: [false, [null]],
       },
+      { key: 'name', label: 'Station' },
+      { key: 'latlong', label: 'Lat, Long' },
+      { key: 'stationReference', label: 'Ref' },
+      { key: 'measures', label: 'Readings' },
     ];
-    getStations().then((data) => {
-      console.log(data);
-      stations.value = data;
+
+    onMounted(async () => {
+      getStations().then((data) => {
+        stations.value = data;
+      });
     });
+
     return {
       stations,
       columns,
+      filters,
       // storeReadings,
     };
   },
