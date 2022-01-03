@@ -6,12 +6,6 @@ export type RequestOptions = {
   params?: Record<string, unknown>;
 };
 
-export type Response = {
-  data: {
-    items: Record<string, unknown> | Array<Record<string, unknown>>,
-  },
-};
-
 const baseRequest = axios.create({
   baseURL: 'https://environment.data.gov.uk',
   timeout: 10000,
@@ -20,10 +14,10 @@ const baseRequest = axios.create({
   },
 });
 
-export function request(options: RequestOptions = {}): Promise<Response> {
+export function request<T>(options: RequestOptions = {}) {
   if (options.path) {
     options.url = options.path;
     delete options.path;
   }
-  return baseRequest(options);
+  return baseRequest.request<T>(options);
 }

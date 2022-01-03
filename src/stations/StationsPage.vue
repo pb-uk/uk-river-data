@@ -2,9 +2,13 @@
   <DefaultPage>
     <h1>Stations</h1>
     <div>{{ Object.keys(stations).length }} stations</div>
-    <div  class="dark">
-    <DataTable :data-object="stations" :columns="columns" :filters="filters" />
-    <!-- div v-for="station, key in stations" :key="key">
+    <div class="dark">
+      <DataTable
+        :data-object="stations"
+        :columns="columns"
+        :filters="filters"
+      />
+      <!-- div v-for="station, key in stations" :key="key">
       Station {{ key }} {{ station.status === null ? 'null' : station.status }}
     </div -->
     </div>

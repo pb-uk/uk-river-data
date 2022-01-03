@@ -13,7 +13,7 @@ import { fetchStation, StationInterface } from './station';
 
 // import StationsTable from './StationsTable.vue';
 
-const updateStation = async (id: string, station: Ref ) => {
+const updateStation = async (id: string, station: Ref) => {
   fetchStation(id)
     .then((res) => {
       station.value = res;
@@ -32,11 +32,13 @@ export default defineComponent({
     const route = useRoute();
     const station: Ref<StationInterface | null> = ref(null);
 
-    watch(() => route.params.id, () => {
-      console.log('Route id changed', route);
-      updateStation(`${route.params.id}`, station);
-    });
-
+    watch(
+      () => route.params.id,
+      () => {
+        console.log('Route id changed', route);
+        updateStation(`${route.params.id}`, station);
+      }
+    );
 
     // onMounted(async () => {});
 

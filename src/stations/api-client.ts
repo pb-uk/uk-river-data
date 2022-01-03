@@ -1,6 +1,6 @@
 import { request, RequestOptions, Response } from '../helpers/request';
 
-const measureTypeRegEx = /\/[^-/]*-([^/]*)$/
+const measureTypeRegEx = /\/[^-/]*-([^/]*)$/;
 const humanMeasureTypeMap: Record<string, string> = {
   'level-groundwater-i-15_min-m': 'groundwater',
   'rainfall-tipping_bucket_raingauge-t-15_min-mm': 'rainfall',
@@ -19,20 +19,20 @@ const humanMeasureTypeMap: Record<string, string> = {
 };
 
 const getHumanMeasureType = (stationMeasure: string): string => {
-  const [,id] = stationMeasure.match(measureTypeRegEx) ?? [];
+  const [, id] = stationMeasure.match(measureTypeRegEx) ?? [];
   return humanMeasureTypeMap[id] ?? id;
-}
+};
 
 /** Stations are stored as an object keyed by the station id. */
 export type Stations = Record<string, StationData>;
 export type StationData = {
-  stationReference: string,
-  status: string | null,
-  name: string,
-  catchment: string,
-  river: string,
-  latlong: [number, number],
-  measures: string[],
+  stationReference: string;
+  status: string | null;
+  name: string;
+  catchment: string;
+  river: string;
+  latlong: [number, number];
+  measures: string[];
 };
 
 type StationsOptions = {
@@ -103,7 +103,7 @@ const parseStationsResponse = (response: Response): Stations => {
       catchment: catchmentName,
       river: riverName,
       latlong: [lat, long],
-      measures: (measures ?? []).map(({ '@id': id }: {'@id': string}) => {
+      measures: (measures ?? []).map(({ '@id': id }: { '@id': string }) => {
         return getHumanMeasureType(id);
       }),
     };

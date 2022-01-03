@@ -47,17 +47,19 @@ export default defineComponent({
     const itemsPerPage = ref(10);
     const currentPageNumber = ref(1);
     console.log(props.dataObject);
-    const filteredRows = Object.keys(props.dataObject).map((key): [key: string, isVisible: boolean] => ([
-      key,
-      true,
-    ]));
+    const filteredRows = Object.keys(props.dataObject).map(
+      (key): [key: string, isVisible: boolean] => [key, true]
+    );
 
     const visibleRows: Ref<Array<Record<string, unknown>>> = ref([]);
 
     const refreshVisibleRows = () => {
       let currentItemIndex = 0;
       const visible = [];
-      while (visible.length < itemsPerPage.value && currentItemIndex < filteredRows.length) {
+      while (
+        visible.length < itemsPerPage.value &&
+        currentItemIndex < filteredRows.length
+      ) {
         const [key, passesFilter] = filteredRows[currentItemIndex];
         if (passesFilter) {
           visible.push(props.dataObject[key]);
