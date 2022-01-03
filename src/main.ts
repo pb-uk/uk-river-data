@@ -6,12 +6,14 @@ import App from './App.vue';
 
 import layout from './layout/index';
 import HomePage from './HomePage.vue';
-import stations from './stations/index';
-import readings from './readings/index';
+// import stations from './stations/index';
+// import readings from './readings/index';
+import station from './station/index';
 
 const routes: Array<RouteRecordRaw> = [
-  ...readings.routes,
-  ...stations.routes,
+  // ...readings.routes,
+  // ...stations.routes,
+  ...station.routes,
   { path: '/', component: HomePage },
   /*
   {

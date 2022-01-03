@@ -7,7 +7,9 @@ export type RequestOptions = {
 };
 
 export type Response = {
-  data: Record<string, unknown>;
+  data: {
+    items: Record<string, unknown> | Array<Record<string, unknown>>,
+  },
 };
 
 const baseRequest = axios.create({
