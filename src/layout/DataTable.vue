@@ -46,7 +46,6 @@ export default defineComponent({
   setup(props) {
     const itemsPerPage = ref(10);
     const currentPageNumber = ref(1);
-    console.log(props.dataObject);
     const filteredRows = Object.keys(props.dataObject).map(
       (key): [key: string, isVisible: boolean] => [key, true]
     );

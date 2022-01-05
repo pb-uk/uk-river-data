@@ -1,5 +1,7 @@
 import { request } from '../api-client/request';
 
+// Implement a global cache.
+
 export interface StationInterface {
   id: string;
   name: string;

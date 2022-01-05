@@ -35,5 +35,6 @@ const router = createRouter({
 createApp(App)
   .component('DefaultPage', layout.components.DefaultPage)
   .component('DataTable', layout.components.DataTable)
+  .component('TimeSeriesChart', layout.components.TimeSeriesChart)
   .use(router)
   .mount('#app');
