@@ -1,5 +1,5 @@
 <template>
-  <div id="myChartId" style="height: 50vh">Chart here</div>
+  <div ref="chartRef" style="height: 50vh"></div>
 </template>
 
 <script lang="ts">
@@ -51,11 +51,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const chartRef = ref(null);
     watch(
       () => props.data,
       async () => {
-        console.log('Reacting');
-        const el = document.getElementById('myChartId');
         // props.data[0]
         const { newPlot } = await fetchPlotly();
         const layout = {
@@ -97,12 +96,11 @@ export default defineComponent({
         const config = {
           responsive: true,
         };
-        console.log('Plotting', props.data, layout, config);
-        newPlot(el, props.data, layout, config);
+        newPlot(chartRef.value, props.data, layout, config);
       }
     );
 
-    return {};
+    return { chartRef };
   },
 });
 </script>

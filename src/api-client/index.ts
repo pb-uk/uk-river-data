@@ -12,9 +12,7 @@ export const parseMeasureUrl = (
   measureTypeExtended: string;
   measureType: string;
 } => {
-  console.log('Parsing');
   const [, , stationReference, measureTypeExtended, measureType] =
     url.match(measureUrlRegEx) ?? [];
-  console.log('Parsed');
   return { stationReference, measureTypeExtended, measureType };
 };

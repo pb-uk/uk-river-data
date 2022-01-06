@@ -75,10 +75,8 @@ export default defineComponent({
         const layout: ChartLayoutType = {
           title: 'Need a good title',
         };
-        console.log('Here', Object.keys(fetched));
         Object.entries(fetched).forEach(([key, value], seriesIndex) => {
           const parsed = parseMeasureUrl(key);
-          console.log('Now', key, parsed);
           const axisId =
             seriesIndex === 0 ? 'yaxis' : `yaxis${seriesIndex + 1}`;
           const axis: ChartAxisType = {
@@ -112,7 +110,6 @@ export default defineComponent({
         chartData.value = data;
         chartLayout.value = layout;
         readings.value = fetched;
-        console.log({ layout, data });
       } catch {
         // Silently fail if no readings for station.
       }

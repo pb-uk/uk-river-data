@@ -8,7 +8,6 @@ interface PlotlyInterface {
 }
 
 const tryWindow = async (resolve: (p: PlotlyInterface) => void) => {
-  console.log('Trying for Plotly');
   if ('Plotly' in window) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore-next-line
