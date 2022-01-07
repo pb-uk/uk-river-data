@@ -33,7 +33,7 @@ export const fetchStationReadings = async (
     new Date(Date.now() - MS_PER_DAY * 7).toISOString().substring(0, 19) + 'Z';
   const path = `/flood-monitoring/id/stations/${stationReference}/readings`;
   const params = {
-    since,
+    // since,
     _sorted: '',
     _limit: 5000, // settings.limit,
   };

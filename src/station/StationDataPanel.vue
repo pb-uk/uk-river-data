@@ -8,29 +8,25 @@
     </div>
   </div -->
   <div>
-    <TimeSeriesChart
-      :data="chartData"
-      :layout="chartLayout"
-      :config="chartConfig"
-    />
+    <div ref="chartRef" style="height: 50vh"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref, shallowRef } from 'vue';
+import { defineComponent, watch, Ref, ref, shallowRef, onMounted } from 'vue';
 import { dateTimeFormat } from '../helpers/format';
 import { parseMeasureUrl } from '../api-client/index';
-import {
-  ChartLayoutType,
-  ChartConfigType,
-  ChartDataType,
-  ChartAxisType,
-} from '../layout/TimeSeriesChart.vue';
+import { createTimeSeriesChart, ChartAxisType, ChartSeriesType, ChartLayoutType } from '../layout/chart/index';
 
 import { fetchStation, StationInterface } from './station';
 import { fetchStationReadings, StationReadings } from '../readings/reading';
 
 // import StationsTable from './StationsTable.vue';
+
+const dataTypes = {
+  data: 'data',
+  'level-flow': 'levelFlow',
+};
 
 export default defineComponent({
   props: {
@@ -38,17 +34,22 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    dataType: {
+      type: String,
+      default: 'unknown',
+    },
   },
 
   emits: ['stationLoaded'],
 
-  setup(params) {
+  setup(props, { emit }) {
+
     const isLoading = ref(false);
     const isLoaded = ref(false);
     const isNotFound = ref(false);
-    const chartData = ref<unknown[]>([]);
-    const chartLayout = ref<ChartLayoutType>({});
-    const chartConfig = ref<ChartConfigType>({});
+    const chartRef: Ref<HTMLElement | null> = ref(null);
+    // const chartData = ref<unknown[]>([]);
+    // const chartOptions = ref<ChartOptionsType>({});
     const station = shallowRef<StationInterface | Record<string, never>>({});
     const readings = shallowRef<StationReadings | Record<string, never>>({});
 
@@ -59,21 +60,25 @@ export default defineComponent({
       station.value = {};
       loadReadings();
       try {
-        const fetched = await fetchStation(params.id);
+        const fetched = await fetchStation(props.id);
         station.value = fetched;
-        // emit('stationLoaded', fetched);
+        emit('stationLoaded', fetched);
       } catch {
         isNotFound.value = true;
       }
     };
 
+    onMounted(load);
+
     const loadReadings = async () => {
       readings.value = {};
       try {
-        const fetched = await fetchStationReadings(params.id);
+        const fetched = await fetchStationReadings(props.id);
         const data: Record<string, unknown>[] = [];
         const layout: ChartLayoutType = {
-          title: 'Need a good title',
+          layout: {
+            title: 'Need a good title',
+          },
         };
         Object.entries(fetched).forEach(([key, value], seriesIndex) => {
           const parsed = parseMeasureUrl(key);
@@ -96,7 +101,7 @@ export default defineComponent({
             x.push(dateTime);
             y.push(value);
           });
-          const seriesData: ChartDataType = {
+          const seriesData: ChartSeriesType = {
             x,
             y,
             type: 'scatter',
@@ -107,21 +112,19 @@ export default defineComponent({
           }
           data.push(seriesData);
         });
-        chartData.value = data;
-        chartLayout.value = layout;
+        if (chartRef.value != null) {
+          createTimeSeriesChart(chartRef.value, data, { layout });
+        }
         readings.value = fetched;
       } catch {
         // Silently fail if no readings for station.
       }
     };
 
-    load();
-    watch(() => params.id, load);
+    watch(() => props.id, load);
 
     return {
-      chartData,
-      chartLayout,
-      chartConfig,
+      chartRef,
       dateTimeFormat,
       station,
       readings,
