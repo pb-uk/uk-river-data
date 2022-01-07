@@ -1,6 +1,6 @@
 import {
   fetchPlotly,
-  ChartSeriesType,
+  ChartTimeSeriesType,
   ChartOptionsType,
   ChartAxisType,
   ChartLayoutType,
@@ -9,7 +9,7 @@ import {
 
 export const createTimeSeriesChart = async (
   el: HTMLElement,
-  data: ChartSeriesType,
+  series: ChartTimeSeriesType[],
   options: ChartOptionsType
 ) => {
   // props.data[0]
@@ -54,5 +54,6 @@ export const createTimeSeriesChart = async (
     responsive: true,
     ...(options.config ?? {}),
   };
-  newPlot(el, data, layout, config);
+  console.log(layout);
+  newPlot(el, series, layout, config);
 };

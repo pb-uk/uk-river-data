@@ -1,2 +1,9 @@
-export { ChartAxisType, ChartConfigType, ChartSeriesType, ChartLayoutType, ChartOptionsType } from './chart';
+export {
+  ChartAxisType,
+  ChartConfigType,
+  ChartSeriesType,
+  ChartTimeSeriesType,
+  ChartLayoutType,
+  ChartOptionsType,
+} from './chart';
 export { createTimeSeriesChart } from './time-series-chart';

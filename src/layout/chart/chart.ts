@@ -1,7 +1,45 @@
+export type ChartAxisType = {
+  title?: string;
+  titlefont?: { color: string };
+  tickfont?: { color: string };
+  side?: string;
+  overlaying?: string;
+  showgrid?: boolean;
+};
+
+export interface ChartConfigType extends Record<string, unknown> {
+  name?: string;
+}
+
+export interface ChartLayoutType extends Record<string, unknown> {
+  title?: {
+    text: string,
+  };
+  yaxis?: ChartAxisType;
+  name?: string;
+}
+
+export type ChartOptionsType = {
+  layout?: ChartLayoutType;
+  config?: ChartConfigType;
+};
+
+export interface ChartSeriesType {
+  y: number[];
+  type?: string;
+  name?: string;
+  yaxis?: string;
+  fill?: string;
+}
+
+export interface ChartTimeSeriesType extends ChartSeriesType {
+  x: Date[];
+}
+
 interface PlotlyInterface {
   newPlot: (
     el: HTMLElement | null,
-    data: Record<string, unknown>,
+    data: ChartSeriesType[],
     layout: Record<string, unknown>,
     config?: Record<string, unknown>
   ) => void;
@@ -21,42 +59,4 @@ export const fetchPlotly = async (): Promise<PlotlyInterface> => {
   return new Promise((resolve) => {
     tryWindow(resolve);
   });
-};
-
-export type ChartSeriesType = {
-  x: Date[];
-  y: number[];
-  type?: string;
-  name?: string;
-  yaxis?: string;
-};
-
-export type ChartAxisType = {
-  title?: string;
-  titlefont?: { color: string };
-  tickfont?: { color: string };
-  side?: string;
-  overlaying?: string;
-  showgrid?: boolean;
-};
-
-export interface ChartLayoutType extends Record<string, unknown> {
-  title?: string;
-  yaxis?: ChartAxisType;
-  name?: string;
-}
-
-export interface ChartConfigType extends Record<string, unknown> {
-  name?: string;
-}
-
-export interface ChartLayoutType extends Record<string, unknown> {
-  title?: string;
-  yaxis?: ChartAxisType;
-  name?: string;
-}
-
-export type ChartOptionsType = {
-  layout?: ChartLayoutType;
-  config?: ChartConfigType;
 };

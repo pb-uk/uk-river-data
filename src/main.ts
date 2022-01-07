@@ -32,9 +32,11 @@ const router = createRouter({
   routes,
 });
 
-createApp(App)
-  .component('DefaultPage', layout.components.DefaultPage)
-  .component('DataTable', layout.components.DataTable)
-  .component('TimeSeriesChart', layout.components.TimeSeriesChart)
-  .use(router)
-  .mount('#app');
+const app = createApp(App);
+
+Object.entries(layout.components).forEach(([key, value]) => {
+  app.component(key, value)
+});
+
+app.use(router);
+app.mount('#app');
