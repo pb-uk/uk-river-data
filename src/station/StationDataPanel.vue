@@ -1,5 +1,5 @@
 <template>
-  <h2>Station {{ station.name }}</h2>
+  <h2>Station {{ station.id }}</h2>
   <div>
     Flow {{ station.measures?.flow?.value }} {{ station.measures?.flow?.unit }}
   </div>
@@ -23,18 +23,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, Ref, ref, shallowRef, onMounted } from 'vue';
+import { defineComponent, watch, Ref, ref, shallowRef, onMounted, onBeforeUnmount } from 'vue';
 import { dateTimeFormat } from '../helpers/format';
-import { parseMeasureUrl } from '../api-client/measure';
+import { parseMeasureUrl } from '../api-client';
 import {
   createTimeSeriesChart,
+  destroyChart,
   ChartAxisOptions,
   ChartSeries,
   ChartLayoutOptions,
 } from '../layout/chart/index';
 
-import { fetchStation, Station } from '../api-client/station';
-import { fetchStationReadings, StationReadings } from '../readings/reading';
+import { fetchStation, Station, fetchStationReadings, StationReadings } from '../api-client';
 
 // import StationsTable from './StationsTable.vue';
 
@@ -68,6 +68,7 @@ export default defineComponent({
     const readings = shallowRef<StationReadings | Record<string, never>>({});
 
     const load = async () => {
+      await destroyChart(chartRef.value);
       isLoading.value = true;
       isLoaded.value = false;
       isNotFound.value = false;
@@ -76,7 +77,7 @@ export default defineComponent({
         const fetched = await fetchStation(props.id);
         station.value = fetched;
 
-        loadReadings();
+        await loadReadings();
         emit('ready', fetched);
       } catch {
         isNotFound.value = true;
@@ -84,6 +85,7 @@ export default defineComponent({
     };
 
     onMounted(load);
+    onBeforeUnmount(async () => (await destroyChart(chartRef.value)));
 
     const loadReadings = async () => {
       readings.value = {};
@@ -132,6 +134,7 @@ export default defineComponent({
           series.push(seriesData);
         });
         if (chartRef.value != null) {
+          destroyChart(chartRef.value);
           createTimeSeriesChart(chartRef.value, series, { layout });
         }
         readings.value = fetched;

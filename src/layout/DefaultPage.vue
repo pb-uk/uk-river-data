@@ -1,6 +1,6 @@
 <template>
   <PageHeader />
-  <slot></slot>
+  <section id="page-content"><slot></slot></section>
   <PageFooter />
 </template>
 

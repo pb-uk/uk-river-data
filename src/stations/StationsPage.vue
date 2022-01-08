@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, onMounted } from 'vue';
-import { getStations, Stations } from './api-client';
+import { fetchStations, Stations } from '../api-client';
 
 // import StationsTable from './StationsTable.vue';
 
@@ -49,7 +49,7 @@ export default defineComponent({
     ];
 
     onMounted(async () => {
-      getStations().then((data) => {
+      fetchStations().then((data) => {
         stations.value = data;
       });
     });

@@ -14,8 +14,7 @@
 import { defineComponent, watch, ref, shallowRef } from 'vue';
 import { dateTimeFormat } from '../helpers/format';
 
-import { fetchStation, Station } from '../api-client/station';
-import { fetchStationReadings, StationReadings } from '../readings/reading';
+import { fetchStation, Station, fetchStationReadings, StationReadings } from '../api-client';
 
 // import StationsTable from './StationsTable.vue';
 

@@ -32,13 +32,18 @@ type StationResponse = {
 export class Station {
   private _props: Record<string, unknown>;
   private _measures: Record<string, StationMeasure> | null = null;
+  private _id: string | null = null;
 
   constructor(props: Record<string, unknown>) {
     this._props = props;
   }
 
   get id(): string {
-    return `${this._props.stationReference}`;
+    if (this._id === null) {
+      const uri = `${this._props['@id']}`;
+      this._id = uri.substring(uri.lastIndexOf('/'));
+    }
+    return this._id;
   }
 
   get measures(): Record<string, StationMeasure> {
@@ -57,8 +62,8 @@ export class Station {
   }
 }
 
-export const fetchStation = async (reference: string): Promise<Station> => {
-  const path = `/flood-monitoring/id/stations/${reference}`;
+export const fetchStation = async (id: string): Promise<Station> => {
+  const path = `/flood-monitoring/id/stations/${id}`;
   const params = {};
   // const response = await (options.request || request)({ path, params });
   const { data } = await request<StationResponse>({ path, params });

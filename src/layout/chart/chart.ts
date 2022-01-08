@@ -39,11 +39,21 @@ export type ChartSeries = {
 };
 
 interface Plotly {
+  /**
+   * Create a new plot.
+   */
   newPlot: (
     el: HTMLElement,
     data: ChartSeries[],
     layout: Record<string, unknown>,
     config?: Record<string, unknown>
+  ) => void;
+
+  /**
+   * Destroy an existing plot.
+   */
+   purge: (
+    el: HTMLElement,
   ) => void;
 }
 
@@ -61,4 +71,10 @@ export const fetchPlotly = async (): Promise<Plotly> => {
   return new Promise((resolve) => {
     tryWindow(resolve);
   });
+};
+
+export const destroyChart = async (el: HTMLElement | null): Promise<void> => {
+  if (el !== null) {
+    (await fetchPlotly()).purge(el);
+  }
 };

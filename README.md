@@ -58,7 +58,7 @@ Show a station with all recent time series data.
 
 Target for embed: 2 requests < 100k.
 
-Need 3 requests: iframe (or script), station details, station name.
+Need 3 requests: iframe (or script), station details, station data.
 
 Timestamps: 20220101T1234Z - valid ISO8601 basic format, unambiguous however JS
 does not parse it!

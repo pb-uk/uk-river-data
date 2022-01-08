@@ -40,7 +40,7 @@ type StationsOptions = {
 };
 
 /** Get a collection of stations. */
-export const getStations = async (
+export const fetchStations = async (
   options: StationsOptions = {}
 ): Promise<Stations> => {
   try {
