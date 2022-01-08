@@ -35,7 +35,7 @@ const router = createRouter({
 const app = createApp(App);
 
 Object.entries(layout.components).forEach(([key, value]) => {
-  app.component(key, value)
+  app.component(key, value);
 });
 
 app.use(router);

@@ -3,7 +3,7 @@
 //                       .*\/ Ignore everything including the last `/`.
 //                           ([^-]*) station reference
 //                                   (([^-]*)-.*-([^-]+)) measure type id
-//                                    ([^-]*) measure type 
+//                                    ([^-]*) measure type
 //                                            .* ignore
 //                                               ([^-]*) unit
 const measureUrlRegEx = /.*\/([^-]*)-(([^-]*)-.*-([^-]*))$/;

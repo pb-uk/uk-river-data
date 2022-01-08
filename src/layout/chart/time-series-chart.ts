@@ -1,20 +1,20 @@
 import {
   fetchPlotly,
-  ChartTimeSeriesType,
-  ChartOptionsType,
-  ChartAxisType,
-  ChartLayoutType,
-  ChartConfigType,
+  ChartSeries,
+  ChartOptions,
+  ChartAxisOptions,
+  ChartLayoutOptions,
+  ChartConfigOptions,
 } from './chart';
 
 export const createTimeSeriesChart = async (
   el: HTMLElement,
-  series: ChartTimeSeriesType[],
-  options: ChartOptionsType
+  series: ChartSeries[],
+  options: ChartOptions
 ) => {
   // props.data[0]
   const { newPlot } = await fetchPlotly();
-  const layout: ChartLayoutType = {
+  const layout: ChartLayoutOptions = {
     // margin: { t: 0 },
     xaxis: {
       autorange: true,
@@ -50,10 +50,10 @@ export const createTimeSeriesChart = async (
     },
     ...(options.layout ?? {}),
   };
-  const config: ChartConfigType = {
+  const config: ChartConfigOptions = {
     responsive: true,
     ...(options.config ?? {}),
   };
-  console.log(layout);
+
   newPlot(el, series, layout, config);
 };

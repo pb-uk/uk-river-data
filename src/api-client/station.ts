@@ -3,18 +3,10 @@ import { request } from './request';
 
 // Implement a global cache.
 
-export interface StationInterface {
-  id: string;
-  name: string;
-  // original: Record<string, unknown>,
-}
-
-type StationMeasure =  Record<string, unknown>;
-
-type StationMeasures = Record<string, StationMeasure>;
+type StationMeasure = Record<string, unknown>;
 
 type StationResponse = {
-  items: StationResponseItem;
+  items: Record<string, unknown>;
 };
 
 /*
@@ -36,32 +28,31 @@ type StationResponse = {
   status: "http://environment.data.gov.uk/flood-monitoring/def/core/statusActive"
   town: "Kingston Upon Thames"
 */
-type StationResponseItem = Record<string, unknown>;
 
-class Station implements StationInterface {
+export class Station {
   private _props: Record<string, unknown>;
-  private _measures: StationMeasures | null = null;
+  private _measures: Record<string, StationMeasure> | null = null;
 
   constructor(props: Record<string, unknown>) {
     this._props = props;
   }
 
-  get id() {
+  get id(): string {
     return `${this._props.stationReference}`;
   }
 
-  get measures(): StationMeasures {
-    if (this._measures == null) {
+  get measures(): Record<string, StationMeasure> {
+    if (this._measures === null) {
       this._measures = parseRawStationMeasures(this._props.measures);
     }
     return this._measures;
   }
 
-  get rawMeasures() {
+  get rawMeasures(): unknown {
     return `${this._props.measures}`;
   }
 
-  get name() {
+  get name(): string {
     return `${this._props.label}`;
   }
 }
@@ -71,20 +62,23 @@ export const fetchStation = async (reference: string): Promise<Station> => {
   const params = {};
   // const response = await (options.request || request)({ path, params });
   const { data } = await request<StationResponse>({ path, params });
-  console.log('Response data', data)
   return new Station(data.items);
 };
 
-export const parseRawStationMeasures = (rawMeasures: unknown): StationMeasures => {
+export const parseRawStationMeasures = (
+  rawMeasures: unknown
+): Record<string, StationMeasure> => {
   if (!Array.isArray(rawMeasures)) return {};
 
-  const measures: StationMeasures = {};
+  const measures: Record<string, StationMeasure> = {};
   rawMeasures.forEach((measure) => {
     if (typeof measure.latestReading === 'object') {
       // If a measure is no longer current the `latestReading` property
       // may be the URI of the last active reading.
       const { dateTime, value } = measure.latestReading;
-      const { type, typeId, unit } = parseMeasureUrl(measure.latestReading.measure);
+      const { type, typeId, unit } = parseMeasureUrl(
+        measure.latestReading.measure
+      );
       if (measures[type] == null) {
         // Only set the first measure of this type.
         measures[type] = {
@@ -97,4 +91,4 @@ export const parseRawStationMeasures = (rawMeasures: unknown): StationMeasures =
     }
   });
   return measures;
-}
+};

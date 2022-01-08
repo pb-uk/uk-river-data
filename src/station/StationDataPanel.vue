@@ -1,6 +1,15 @@
 <template>
   <h2>Station {{ station.name }}</h2>
+  <div>
+    Flow {{ station.measures?.flow?.value }} {{ station.measures?.flow?.unit }}
+  </div>
+  <div>
+    Level {{ station.measures?.level?.value }}
+    {{ station.measures?.level?.unit }}
+  </div>
+
   <pre>{{ station.measures }}</pre>
+
   <div v-if="isNotFound">Not Found</div>
   <!-- div v-for="measure, measureKey in readings" :key="measureKey">
     <h3>{{ measureKey }}</h3>
@@ -19,12 +28,12 @@ import { dateTimeFormat } from '../helpers/format';
 import { parseMeasureUrl } from '../api-client/measure';
 import {
   createTimeSeriesChart,
-  ChartAxisType,
-  ChartTimeSeriesType,
-  ChartLayoutType,
+  ChartAxisOptions,
+  ChartSeries,
+  ChartLayoutOptions,
 } from '../layout/chart/index';
 
-import { fetchStation, StationInterface } from '../api-client/station';
+import { fetchStation, Station } from '../api-client/station';
 import { fetchStationReadings, StationReadings } from '../readings/reading';
 
 // import StationsTable from './StationsTable.vue';
@@ -46,7 +55,7 @@ export default defineComponent({
     },
   },
 
-  emits: ['stationLoaded'],
+  emits: ['ready'],
 
   setup(props, { emit }) {
     const isLoading = ref(false);
@@ -54,8 +63,8 @@ export default defineComponent({
     const isNotFound = ref(false);
     const chartRef: Ref<HTMLElement | null> = ref(null);
     // const chartData = ref<unknown[]>([]);
-    // const chartOptions = ref<ChartOptionsType>({});
-    const station = shallowRef<StationInterface | Record<string, never>>({});
+    // const chartOptions = ref<ChartOptions>({});
+    const station = shallowRef<Station | Record<string, never>>({});
     const readings = shallowRef<StationReadings | Record<string, never>>({});
 
     const load = async () => {
@@ -66,9 +75,9 @@ export default defineComponent({
       try {
         const fetched = await fetchStation(props.id);
         station.value = fetched;
-        console.log(fetched);
+
         loadReadings();
-        emit('stationLoaded', fetched);
+        emit('ready', fetched);
       } catch {
         isNotFound.value = true;
       }
@@ -80,8 +89,8 @@ export default defineComponent({
       readings.value = {};
       try {
         const fetched = await fetchStationReadings(props.id);
-        const series: ChartTimeSeriesType[] = [];
-        const layout: ChartLayoutType = {
+        const series: ChartSeries[] = [];
+        const layout: ChartLayoutOptions = {
           title: {
             text: `${station.value.name}`,
           },
@@ -90,7 +99,7 @@ export default defineComponent({
           const parsed = parseMeasureUrl(key);
           const axisId =
             seriesIndex === 0 ? 'yaxis' : `yaxis${seriesIndex + 1}`;
-          const axis: ChartAxisType = {
+          const axis: ChartAxisOptions = {
             title: parsed.type,
           };
           if (seriesIndex > 0) {
@@ -99,6 +108,8 @@ export default defineComponent({
             axis.showgrid = false;
           }
 
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore-next-line
           layout[axisId] = axis;
 
           const x: Date[] = [];
@@ -107,7 +118,7 @@ export default defineComponent({
             x.push(dateTime);
             y.push(value);
           });
-          const seriesData: ChartTimeSeriesType = {
+          const seriesData: ChartSeries = {
             x,
             y,
             type: 'scatter',

@@ -14,7 +14,7 @@
 import { defineComponent, watch, ref, shallowRef } from 'vue';
 import { dateTimeFormat } from '../helpers/format';
 
-import { fetchStation, StationInterface } from '../api-client/station';
+import { fetchStation, Station } from '../api-client/station';
 import { fetchStationReadings, StationReadings } from '../readings/reading';
 
 // import StationsTable from './StationsTable.vue';
@@ -34,7 +34,7 @@ export default defineComponent({
     const isLoaded = ref(false);
     const isNotFound = ref(false);
     const chartData = ref<unknown[]>([]);
-    const station = shallowRef<StationInterface | Record<string, never>>({});
+    const station = shallowRef<Station | Record<string, never>>({});
     const readings = shallowRef<StationReadings | Record<string, never>>({});
 
     const load = async () => {
