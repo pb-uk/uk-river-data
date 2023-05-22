@@ -1,0 +1,15 @@
+{
+  "name": "uk-river-data",
+  "version": "0.9.0-dev",
+  "description": "Access APIs for level, flow and other data for rivers in the UK.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "river flow",
+    "river level",
+    "river"
+  ],
+  "license": "MIT"
+}
